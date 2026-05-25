@@ -1,0 +1,2 @@
+text = "weiying"
+print(text)
