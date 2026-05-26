@@ -164,3 +164,6 @@ elif menu == "Study Buddy Finder":
         st.success(
             "You're not studying alone anymore 💪"
         )
+
+
+#streamlit run app.py
