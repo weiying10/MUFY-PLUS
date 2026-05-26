@@ -49,9 +49,6 @@ if __name__ == "__main__":
 
 
 
-
-
-
 # Sample DataFrame
 df = pd.DataFrame({
     'Month': ['January', 'February', 'March', 'January'],
