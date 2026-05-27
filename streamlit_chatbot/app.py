@@ -129,7 +129,10 @@ elif menu == "Wellness Check-In":
 # ======================================================
 elif menu == "Study Buddy Finder":
 
-    st.header("🤝 Find Study Buddies")
+    import folium
+    from streamlit_folium import st_folium
+
+    st.header("📍 Find Study Buddies Nearby")
 
     subject = st.selectbox(
         "What are you studying now?",
@@ -138,32 +141,58 @@ elif menu == "Study Buddy Finder":
             "Physics",
             "Chemistry",
             "Biology",
-            "Computer Science",
+            "Account",
             "English"
         ]
     )
 
-    if st.button("Find Study Partners"):
+    st.write("### Students currently studying nearby")
 
-        fake_students = {
-            "Mathematics": ["Ali", "Jason"],
-            "Physics": ["Siti", "Daniel"],
-            "Chemistry": ["Aina"],
-            "Biology": ["Sarah"],
-            "Computer Science": ["Kevin", "Mei"],
-            "English": ["John"]
+    # Example coordinates (fake demo data)
+    students = [
+        {
+            "name": "Ali",
+            "subject": "Account",
+            "location": [3.1390, 101.6869]
+        },
+        {
+            "name": "Siti",
+            "subject": "Mathematics",
+            "location": [3.1405, 101.6880]
+        },
+        {
+            "name": "Jason",
+            "subject": "Physics",
+            "location": [3.1380, 101.6875]
+        },
+        {
+            "name": "Mei",
+            "subject": "English",
+            "location": [3.1410, 101.6890]
         }
+    ]
 
-        students = fake_students.get(subject, [])
+    # Center map
+    m = folium.Map(
+        location=[3.1390, 101.6869],
+        zoom_start=16
+    )
 
-        st.write(f"### Students studying {subject} now:")
+    # Add markers
+    for student in students:
 
-        for student in students:
-            st.write(f"✅ {student} is currently studying")
+        if student["subject"] == subject:
 
-        st.success(
-            "You're not studying alone anymore 💪"
-        )
+            folium.Marker(
+                location=student["location"],
+                popup=f"{student['name']} studying {student['subject']}",
+                tooltip=student["name"]
+            ).add_to(m)
+
+    # Show map
+    st_folium(m, width=700, height=500)
+
+    st.success("You're not studying alone 💪")
 
 
 #streamlit run app.py
