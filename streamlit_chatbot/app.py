@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from streamlit_calendar import calendar
 
 # -----------------------------
 # PAGE SETTINGS
@@ -42,55 +43,80 @@ if menu == "Assignment Tracker":
 
     if st.button("Add Task"):
 
-        task = {
-            "Task": assignment_name,
-            "Deadline": deadline
-        }
-
         if "tasks" not in st.session_state:
             st.session_state.tasks = []
 
-        st.session_state.tasks.append(task)
+        st.session_state.tasks.append({
+            "title": assignment_name,
+            "start": str(deadline),
+            "color": "#ff6b6b"
+        })
 
-        st.success("Task Added Successfully!")
+        st.success("Task Added!")
 
-    st.subheader("Upcoming Tasks")
+    st.subheader("📅 Assignment Calendar")
 
     if "tasks" in st.session_state:
-        df = pd.DataFrame(st.session_state.tasks)
-        st.table(df)
+
+        calendar_options = {
+            "initialView": "dayGridMonth",
+            "height": 650,
+        }
+
+        calendar(
+            events=st.session_state.tasks,
+            options=calendar_options
+        )
+
     else:
-        st.info("No tasks added yet.")
+        st.info("No assignments added yet.")
 
 # ======================================================
 # CLASS TIMETABLE
 # ======================================================
 elif menu == "Class Timetable":
 
-    st.header("📅 Class Timetable")
+    st.header("📚 Class Timetable")
 
     class_name = st.text_input("Class Name")
-    class_time = st.time_input("Class Time")
+    class_day = st.selectbox(
+        "Day",
+        [
+            "2026-05-26",
+            "2026-05-27",
+            "2026-05-28",
+            "2026-05-29",
+            "2026-05-30"
+        ]
+    )
 
     if st.button("Add Class"):
-
-        class_data = {
-            "Class": class_name,
-            "Time": class_time
-        }
 
         if "classes" not in st.session_state:
             st.session_state.classes = []
 
-        st.session_state.classes.append(class_data)
+        st.session_state.classes.append({
+            "title": class_name,
+            "start": class_day,
+            "color": "#4dabf7"
+        })
 
         st.success("Class Added!")
 
-    st.subheader("Today's Classes")
+    st.subheader("🗓️ Weekly Timetable")
 
     if "classes" in st.session_state:
-        df = pd.DataFrame(st.session_state.classes)
-        st.table(df)
+
+        calendar_options = {
+            "initialView": "dayGridWeek",
+            "height": 650,
+        }
+
+        calendar(
+            events=st.session_state.classes,
+            options=calendar_options
+        )
+
     else:
         st.info("No classes added yet.")
 
