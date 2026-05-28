@@ -39,6 +39,7 @@ if menu == "Assignment Tracker":
     st.header("📝 Assignment & Exam Tracker")
 
     assignment_name = st.text_input("Assignment / Exam Name")
+
     deadline = st.date_input("Deadline")
 
     if st.button("Add Task"):
@@ -54,6 +55,37 @@ if menu == "Assignment Tracker":
 
         st.success("Task Added!")
 
+    # -----------------------------------
+    # DELETE TASKS
+    # -----------------------------------
+
+    st.subheader("📋 Current Tasks")
+
+    if "tasks" in st.session_state and st.session_state.tasks:
+
+        for i, task in enumerate(st.session_state.tasks):
+
+            col1, col2 = st.columns([4, 1])
+
+            with col1:
+                st.write(
+                    f"📌 {task['title']} — {task['start']}"
+                )
+
+            with col2:
+                if st.button("❌", key=f"delete_task_{i}"):
+
+                    st.session_state.tasks.pop(i)
+
+                    st.rerun()
+
+    else:
+        st.info("No tasks added yet.")
+
+    # -----------------------------------
+    # CALENDAR
+    # -----------------------------------
+
     st.subheader("📅 Assignment Calendar")
 
     if "tasks" in st.session_state:
@@ -67,9 +99,6 @@ if menu == "Assignment Tracker":
             events=st.session_state.tasks,
             options=calendar_options
         )
-
-    else:
-        st.info("No assignments added yet.")
 
 # ======================================================
 # CLASS TIMETABLE
@@ -94,13 +123,11 @@ elif menu == "Class Timetable":
     # Add class button
     if st.button("Add Class"):
 
-        # Create storage if not exists
         if "classes" not in st.session_state:
             st.session_state.classes = []
 
         try:
 
-            # Convert input into datetime
             start_datetime = datetime.strptime(
                 f"{class_day} {start_time}",
                 "%Y-%m-%d %H:%M"
@@ -111,7 +138,6 @@ elif menu == "Class Timetable":
                 "%Y-%m-%d %H:%M"
             )
 
-            # Add event into calendar
             st.session_state.classes.append({
                 "title": class_name,
                 "start": start_datetime.isoformat(),
@@ -126,7 +152,37 @@ elif menu == "Class Timetable":
                 "Invalid time format. Please use HH:MM format."
             )
 
-    # Display timetable calendar
+    # -----------------------------------
+    # DELETE CLASSES
+    # -----------------------------------
+
+    st.subheader("📋 Current Classes")
+
+    if "classes" in st.session_state and st.session_state.classes:
+
+        for i, class_item in enumerate(st.session_state.classes):
+
+            col1, col2 = st.columns([4, 1])
+
+            with col1:
+                st.write(
+                    f"📚 {class_item['title']}"
+                )
+
+            with col2:
+                if st.button("❌", key=f"delete_class_{i}"):
+
+                    st.session_state.classes.pop(i)
+
+                    st.rerun()
+
+    else:
+        st.info("No classes added yet.")
+
+    # -----------------------------------
+    # TIMETABLE CALENDAR
+    # -----------------------------------
+
     st.subheader("🗓️ Weekly Timetable")
 
     if "classes" in st.session_state:
@@ -142,9 +198,6 @@ elif menu == "Class Timetable":
             events=st.session_state.classes,
             options=calendar_options
         )
-
-    else:
-        st.info("No classes added yet.")
 
 # ======================================================
 # WELLNESS CHECK-IN
