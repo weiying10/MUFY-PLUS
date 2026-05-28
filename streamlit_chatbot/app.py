@@ -79,25 +79,26 @@ elif menu == "Class Timetable":
     st.header("📚 Class Timetable")
 
     class_name = st.text_input("Class Name")
-    class_day = st.selectbox(
-        "Day",
-        [
-            "2026-05-26",
-            "2026-05-27",
-            "2026-05-28",
-            "2026-05-29",
-            "2026-05-30"
-        ]
-    )
+
+    class_day = st.date_input("Class Date")
+
+    start_time = st.time_input("Start Time")
+
+    end_time = st.time_input("End Time")
 
     if st.button("Add Class"):
 
         if "classes" not in st.session_state:
             st.session_state.classes = []
 
+        # Combine date + time
+        start_datetime = datetime.combine(class_day, start_time)
+        end_datetime = datetime.combine(class_day, end_time)
+
         st.session_state.classes.append({
             "title": class_name,
-            "start": class_day,
+            "start": start_datetime.isoformat(),
+            "end": end_datetime.isoformat(),
             "color": "#4dabf7"
         })
 
@@ -108,8 +109,10 @@ elif menu == "Class Timetable":
     if "classes" in st.session_state:
 
         calendar_options = {
-            "initialView": "dayGridWeek",
-            "height": 650,
+            "initialView": "timeGridWeek",
+            "slotMinTime": "07:00:00",
+            "slotMaxTime": "22:00:00",
+            "height": 700,
         }
 
         calendar(
