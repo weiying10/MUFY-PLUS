@@ -78,32 +78,55 @@ elif menu == "Class Timetable":
 
     st.header("📚 Class Timetable")
 
+    # User inputs
     class_name = st.text_input("Class Name")
 
     class_day = st.date_input("Class Date")
 
-    start_time = st.time_input("Start Time")
+    start_time = st.text_input(
+        "Start Time (24-hour format, example: 08:00)"
+    )
 
-    end_time = st.time_input("End Time")
+    end_time = st.text_input(
+        "End Time (24-hour format, example: 10:00)"
+    )
 
+    # Add class button
     if st.button("Add Class"):
 
+        # Create storage if not exists
         if "classes" not in st.session_state:
             st.session_state.classes = []
 
-        # Combine date + time
-        start_datetime = datetime.combine(class_day, start_time)
-        end_datetime = datetime.combine(class_day, end_time)
+        try:
 
-        st.session_state.classes.append({
-            "title": class_name,
-            "start": start_datetime.isoformat(),
-            "end": end_datetime.isoformat(),
-            "color": "#4dabf7"
-        })
+            # Convert input into datetime
+            start_datetime = datetime.strptime(
+                f"{class_day} {start_time}",
+                "%Y-%m-%d %H:%M"
+            )
 
-        st.success("Class Added!")
+            end_datetime = datetime.strptime(
+                f"{class_day} {end_time}",
+                "%Y-%m-%d %H:%M"
+            )
 
+            # Add event into calendar
+            st.session_state.classes.append({
+                "title": class_name,
+                "start": start_datetime.isoformat(),
+                "end": end_datetime.isoformat(),
+                "color": "#4dabf7"
+            })
+
+            st.success("Class Added Successfully!")
+
+        except:
+            st.error(
+                "Invalid time format. Please use HH:MM format."
+            )
+
+    # Display timetable calendar
     st.subheader("🗓️ Weekly Timetable")
 
     if "classes" in st.session_state:
